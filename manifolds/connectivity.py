@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 
 def get_connectivity(distance_matrix, cutoff_radius):
@@ -44,13 +45,14 @@ def get_num_connected_manifolds(distance_matrix, cutoff_list):
   return [ len(get_connectivity(distance_matrix, cutoff)) for cutoff in cutoff_list ]
 
 
-def plot_num_connected_manifolds_vs_cutoffs(distance_matrix, cutoff_list):
+def plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list, dimension):
   '''Plot the number of connected manifolds against a list
-     of cutoffs.
+     of average cutoffs.
   '''
+  cutoff_list = [ np.sqrt(dimension) * c for c in average_cutoff_list ]
   num_connected_manifolds = get_num_connected_manifolds(distance_matrix, cutoff_list)
 
-  plt.plot(cutoff_list, num_connected_manifolds)
+  plt.plot(average_cutoff_list, num_connected_manifolds)
   plt.show()
 
 
@@ -63,9 +65,10 @@ def get_size_max_cluster(distance_matrix, cutoff_list):
   return max_sizes
 
 
-def plot_size_max_cluter(distance_matrix, cutoff_list):
-  '''Plot the max size of clusters for a list of cutoffs.'''
+def plot_size_max_cluter(distance_matrix, average_cutoff_list, dimension):
+  '''Plot the max size of clusters for a list of average cutoffs.'''
+  cutoff_list = [ np.sqrt(dimension) * c for c in average_cutoff_list ]
   max_sizes = get_size_max_cluster(distance_matrix, cutoff_list)
 
-  plt.plot(cutoff_list, max_sizes)
+  plt.plot(average_cutoff_list, max_sizes)
   plt.show()

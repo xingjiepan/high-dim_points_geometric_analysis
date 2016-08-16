@@ -17,7 +17,6 @@ from manifolds.connectivity import plot_size_max_cluter
 
 td_calc = TorusDistance(360)
 #max_distance = td_calc.max_distance(points[0].shape[0])
-max_distance = td_calc.max_distance(24)
 ##print(max_distance)
 
 #distance_matrix = calc_distance_matrix(points, td_calc)
@@ -30,6 +29,6 @@ distance_matrix = None
 with open('test_dist_matrix.pickle', 'rb') as f:
   distance_matrix = pickle.load(f)
 
-cutoff_list = [ max_distance * i / 300 for i in range(100) ]
-#plot_num_connected_manifolds_vs_cutoffs(distance_matrix, cutoff_list) 
-plot_size_max_cluter(distance_matrix, cutoff_list) 
+average_cutoff_list = [ 180 * i / 300 for i in range(100) ]
+#plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list, 24) 
+plot_size_max_cluter(distance_matrix, average_cutoff_list, 24) 

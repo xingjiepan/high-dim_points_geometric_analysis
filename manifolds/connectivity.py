@@ -52,12 +52,15 @@ def get_attributes_vs_cutoffs(distance_matrix, cutoff_list, attribute_func):
   connected_sets = None
 
   # Initialize the distance set
+  
   distance_set = set()
   num_points = distance_matrix.shape[0]
   
   for i in range(num_points):
     for j in range(i+1, num_points):
       distance_set.add( (i, j, distance_matrix[i][j]) )
+  
+  # Calculate the attribute for each cutoff
   
   for cutoff in cutoff_list:
     connected_sets = get_connectivity(distance_set, cutoff, num_points, connected_sets)
@@ -98,3 +101,18 @@ def plot_size_max_cluter(distance_matrix, average_cutoff_list, dimension):
 
   plt.plot(average_cutoff_list, max_sizes)
   plt.show()
+
+def plot_one_cluster_size(distance_matrix, average_cutoff_list, dimension, point_index):
+  '''Plot the size of cluster that contains the given point.'''
+  cutoff_list = [ np.sqrt(dimension) * c for c in average_cutoff_list ]
+
+  class get_cluster_size:
+    point = point_index
+    def run(connected_sets):
+      return len(connected_sets[get_cluster_size.point])
+    
+  sizes = get_attributes_vs_cutoffs(distance_matrix, cutoff_list, get_cluster_size.run)
+
+  plt.plot(average_cutoff_list, sizes)
+  plt.show()
+

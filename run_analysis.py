@@ -8,6 +8,8 @@ from metrics.distance_calculators import TorusDistance
 from metrics.distance_matrix import calc_distance_matrix
 from manifolds.connectivity import plot_num_connected_manifolds_vs_cutoffs
 from manifolds.connectivity import plot_size_max_cluter 
+from manifolds.connectivity import plot_one_cluster_size 
+
 
 #pdb_dir = 'inputs/test/30_KIC_with_fragments_1arb_RolandFragsInputsSettings_ideal'
 #pdb_list = [ os.path.join(pdb_dir, f) for f in os.listdir(pdb_dir) ]
@@ -32,3 +34,4 @@ with open('test_dist_matrix.pickle', 'rb') as f:
 average_cutoff_list = [ 180 * i / 300 for i in range(100) ]
 #plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list, 24) 
 plot_size_max_cluter(distance_matrix, average_cutoff_list, 24) 
+#plot_one_cluster_size(distance_matrix, average_cutoff_list, 24, 0) 

@@ -75,7 +75,7 @@ def get_attributes_vs_cutoffs(distance_matrix, cutoff_list, attribute_func):
   return attribute_list
 
 
-def plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list, dimension):
+def plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list, dimension, save=None, title=''):
   '''Plot the number of connected manifolds against a list
      of average cutoffs.
   '''
@@ -86,11 +86,19 @@ def plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list
 
   num_connected_manifolds = get_attributes_vs_cutoffs(distance_matrix, cutoff_list, num_clusters)
 
+  plt.clf()
   plt.plot(average_cutoff_list, num_connected_manifolds)
-  plt.show()
+  plt.title(title)
+  plt.xlabel('average cutoff')
+  plt.ylabel('num clusters')
+  
+  if not save:
+    plt.show()
+  else:
+    plt.savefig(save)
 
 
-def plot_size_max_cluter(distance_matrix, average_cutoff_list, dimension):
+def plot_size_max_cluter(distance_matrix, average_cutoff_list, dimension, save=None, title=''):
   '''Plot the max size of clusters for a list of average cutoffs.'''
   cutoff_list = [ np.sqrt(dimension) * c for c in average_cutoff_list ]
 
@@ -99,10 +107,18 @@ def plot_size_max_cluter(distance_matrix, average_cutoff_list, dimension):
     
   max_sizes = get_attributes_vs_cutoffs(distance_matrix, cutoff_list, get_max_cluster_size)
 
+  plt.clf()
   plt.plot(average_cutoff_list, max_sizes)
-  plt.show()
+  plt.title(title)
+  plt.xlabel('average cutoff')
+  plt.ylabel('max cluster size')
+  
+  if not save:
+    plt.show()
+  else:
+    plt.savefig(save)
 
-def plot_one_cluster_size(distance_matrix, average_cutoff_list, dimension, point_index):
+def plot_one_cluster_size(distance_matrix, average_cutoff_list, dimension, point_index, save=None, title=''):
   '''Plot the size of cluster that contains the given point.'''
   cutoff_list = [ np.sqrt(dimension) * c for c in average_cutoff_list ]
 
@@ -113,6 +129,14 @@ def plot_one_cluster_size(distance_matrix, average_cutoff_list, dimension, point
     
   sizes = get_attributes_vs_cutoffs(distance_matrix, cutoff_list, get_cluster_size.run)
 
+  plt.clf()
   plt.plot(average_cutoff_list, sizes)
-  plt.show()
+  plt.title(title)
+  plt.xlabel('average cutoff')
+  plt.ylabel('size of cluster contains point {0}'.format(point_index))
+  
+  if not save:
+    plt.show()
+  else:
+    plt.savefig(save)
 

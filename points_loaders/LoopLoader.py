@@ -25,6 +25,30 @@ class LoopTorsionLoader:
 
     return point_list
 
+  def get_begin_end_from_loop_file(pdb_file, loop_file, model=0, chain='A'):
+    '''Get the begin and end of a loop from a loop file.
+       Note that the numbers in a loop file are rosetta numbers,
+       while the begin and end are PDB file numbers.
+    '''
+    # Read Rosetta loop terminals
+    
+    rosetta_begin = 0
+    rosetta_end = 0
+
+    with open(loop_file, 'r') as lf:
+      line = lf.readline()
+      rosetta_begin = int(line.split()[1])
+      rosetta_end = int(line.split()[2])
+
+    # Convert Rosetta numbers into pdb numbers
+
+    parser = PDB.PDBParser()
+    structure = parser.get_structure('', pdb_file)
+
+    residue_list = [ r for r in structure[model][chain] ]
+
+    return (residue_list[rosetta_begin].get_id()[1], residue_list[rosetta_end].get_id()[1])
+
 
 class Loop:
   '''A simple helper class which defines the torsions of a loop.'''

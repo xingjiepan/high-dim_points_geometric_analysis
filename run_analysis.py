@@ -11,7 +11,7 @@ from manifolds.connectivity import plot_size_max_cluter
 from manifolds.connectivity import plot_one_cluster_size 
 
 
-#pdb_dir = 'inputs/test/30_KIC_with_fragments_1arb_RolandFragsInputsSettings_ideal'
+#pdb_dir = 'tests/30_KIC_with_fragments_1arb_RolandFragsInputsSettings_ideal'
 #pdb_list = [ os.path.join(pdb_dir, f) for f in os.listdir(pdb_dir) ]
 #
 #points = LoopTorsionLoader.load_from_pdbs(pdb_list, 182, 193)

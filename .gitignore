@@ -1,3 +1,5 @@
 __pycache__
 *.swp
 *.pickle
+inputs
+outputs

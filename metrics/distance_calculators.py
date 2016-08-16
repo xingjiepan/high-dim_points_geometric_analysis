@@ -18,3 +18,8 @@ class TorusDistance:
 
     return np.sqrt(np.sum(min_diff**2))
 
+  def max_distance(self, dimension):
+    '''Get the max distance between two points on the N-dim torus
+      whose length is self.torus_length.
+    '''
+    return np.sqrt(dimension) * self.torus_length / 2 

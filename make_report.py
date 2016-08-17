@@ -8,8 +8,9 @@ import getpass
 from points_loaders.LoopLoader import LoopTorsionLoader
 from metrics.distance_calculators import TorusDistance
 from metrics.distance_matrix import calc_distance_matrix
+from metrics.distance_matrix import plot_distance_distribution
 from manifolds.connectivity import plot_num_connected_manifolds_vs_cutoffs
-from manifolds.connectivity import plot_size_max_cluter 
+from manifolds.connectivity import plot_size_max_N_cluter 
 from manifolds.connectivity import plot_one_cluster_size 
 
 
@@ -35,20 +36,26 @@ def analyze_one_protein(name):
   distance_matrix = calc_distance_matrix(points, td_calc)
 
   # Save the figures
+ 
+  plot_distance_distribution(distance_matrix, 20,
+        180, dimension,
+        save=os.path.join(name, 'distance_distribution.png'),
+        title=name)
   
   average_cutoff_list = [ 180 * i / 300 for i in range(100) ]
 
-  plot_num_connected_manifolds_vs_cutoffs(distance_matrix,
-        average_cutoff_list,
-        dimension,
-        save=os.path.join(name, 'num_connected_manifolds_vs_cutoffs.png'),
-        title=name) 
+#  plot_num_connected_manifolds_vs_cutoffs(distance_matrix,
+#        average_cutoff_list,
+#        dimension,
+#        save=os.path.join(name, 'num_connected_manifolds_vs_cutoffs.png'),
+#        title=name) 
   
-  plot_size_max_cluter(distance_matrix,
-        average_cutoff_list,
-        dimension,
-        save=os.path.join(name, 'size_max_cluter.png'),
-        title=name) 
+#  plot_size_max_N_cluter(distance_matrix,
+#        average_cutoff_list,
+#        dimension,
+#        num_clusters=5,
+#        save=os.path.join(name, 'size_max_cluter.png'),
+#        title=name) 
 
 def get_content_of_one_protein(name):
   # Get figures
@@ -60,12 +67,14 @@ def get_content_of_one_protein(name):
   figure_template = '''\
 \\begin{{figure}}[h]
     \\centering
+    \\parbox{{3in}}{{\\includegraphics[width=3in]{{{distance_distribution_plot_path}}}}}
     \\parbox{{3in}}{{\\includegraphics[width=3in]{{{num_cluster_plot_path}}}}}
     \\parbox{{3in}}{{\\includegraphics[width=3in]{{{size_max_cluster_plot_path}}}}}
 \\end{{figure}}
 '''
   
   return figure_template.format(
+          distance_distribution_plot_path=os.path.join(name, 'distance_distribution.png'),
           num_cluster_plot_path=os.path.join(name, 'num_connected_manifolds_vs_cutoffs.png'),
           size_max_cluster_plot_path=os.path.join(name, 'size_max_cluter.png'))
 

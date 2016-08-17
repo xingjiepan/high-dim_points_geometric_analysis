@@ -98,17 +98,21 @@ def plot_num_connected_manifolds_vs_cutoffs(distance_matrix, average_cutoff_list
     plt.savefig(save)
 
 
-def plot_size_max_cluter(distance_matrix, average_cutoff_list, dimension, save=None, title=''):
-  '''Plot the max size of clusters for a list of average cutoffs.'''
+def plot_size_max_N_cluter(distance_matrix, average_cutoff_list, dimension, num_clusters=1, save=None, title=''):
+  '''Plot the sizes of N max clusters for a list of average cutoffs.'''
   cutoff_list = [ np.sqrt(dimension) * c for c in average_cutoff_list ]
 
   def get_max_cluster_size(connected_sets):
-    return max([ len(connected_set) for connected_set in connected_sets ])
+    return sorted([len(connected_set) for connected_set in wrap_connected_sets(connected_sets)], reverse=True)
     
   max_sizes = get_attributes_vs_cutoffs(distance_matrix, cutoff_list, get_max_cluster_size)
 
   plt.clf()
-  plt.plot(average_cutoff_list, max_sizes)
+
+  for i in range(num_clusters):
+    max_i_sizes = [ s[i] if len(s) > i else 0 for s in max_sizes]
+    plt.plot(average_cutoff_list, max_i_sizes)
+  
   plt.title(title)
   plt.xlabel('average cutoff')
   plt.ylabel('max cluster size')

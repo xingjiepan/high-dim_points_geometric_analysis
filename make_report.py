@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 import getpass
+import pickle
 
 from points_loaders.LoopLoader import LoopTorsionLoader
 from metrics.distance_calculators import TorusDistance
@@ -12,7 +13,7 @@ from metrics.distance_matrix import plot_distance_distribution
 from manifolds.connectivity import plot_num_connected_manifolds_vs_cutoffs
 from manifolds.connectivity import plot_size_max_N_cluter 
 from manifolds.connectivity import plot_one_cluster_size 
-
+from manifolds.dimension import plot_local_dimension_of_points_on_torus
 
 def analyze_one_protein(name):
   structure_dir = os.path.join(name, 'structures')
@@ -27,19 +28,41 @@ def analyze_one_protein(name):
 
   # Load points
 
-  points = LoopTorsionLoader.load_from_pdbs(pdb_list, loop_terminals[0], loop_terminals[1])
+  points = None
 
+  if os.path.exists(os.path.join(name, 'cached_points.pickle')):
+    with open(os.path.join(name, 'cached_points.pickle'), 'rb') as f:
+      points = pickle.load(f)
+     
+  else:
+    points = LoopTorsionLoader.load_from_pdbs(pdb_list, loop_terminals[0], loop_terminals[1])
+    with open(os.path.join(name, 'cached_points.pickle'), 'wb') as f:
+      pickle.dump(points, f, pickle.HIGHEST_PROTOCOL)
 
   # Get the distance matrix
 
-  td_calc = TorusDistance(360)
-  distance_matrix = calc_distance_matrix(points, td_calc)
+  distance_matrix = None
+
+  if os.path.exists(os.path.join(name, 'cached_distance_matrix.pickle')):
+    with open(os.path.join(name, 'cached_distance_matrix.pickle'), 'rb') as f:
+      distance_matrix = pickle.load(f)
+
+  else:
+    td_calc = TorusDistance(360)
+    distance_matrix = calc_distance_matrix(points, td_calc)
+    with open(os.path.join(name, 'cached_distance_matrix.pickle'), 'wb') as f:
+      pickle.dump(distance_matrix, f, pickle.HIGHEST_PROTOCOL)
 
   # Save the figures
  
-  plot_distance_distribution(distance_matrix, 20,
-        180, dimension,
-        save=os.path.join(name, 'distance_distribution.png'),
+#  plot_distance_distribution(distance_matrix, 20,
+#        180, dimension,
+#        save=os.path.join(name, 'distance_distribution.png'),
+#        title=name)
+
+  plot_local_dimension_of_points_on_torus(points, 
+        distance_matrix, 5, 360,
+        save=os.path.join(name, 'local_dimensions.png'),
         title=name)
   
   average_cutoff_list = [ 180 * i / 300 for i in range(100) ]
@@ -60,21 +83,25 @@ def analyze_one_protein(name):
 def get_content_of_one_protein(name):
   # Get figures
 
-  #analyze_one_protein(name)
+  analyze_one_protein(name)
   
   # Insert figures into the report
 
   figure_template = '''\
 \\begin{{figure}}[h]
     \\centering
+    \\caption{{{name}}}
     \\parbox{{3in}}{{\\includegraphics[width=3in]{{{distance_distribution_plot_path}}}}}
+    \\parbox{{3in}}{{\\includegraphics[width=3in]{{{local_dimensions_plot_path}}}}}
     \\parbox{{3in}}{{\\includegraphics[width=3in]{{{num_cluster_plot_path}}}}}
     \\parbox{{3in}}{{\\includegraphics[width=3in]{{{size_max_cluster_plot_path}}}}}
 \\end{{figure}}
 '''
   
   return figure_template.format(
+          name=name,
           distance_distribution_plot_path=os.path.join(name, 'distance_distribution.png'),
+          local_dimensions_plot_path=os.path.join(name, 'local_dimensions.png'),
           num_cluster_plot_path=os.path.join(name, 'num_connected_manifolds_vs_cutoffs.png'),
           size_max_cluster_plot_path=os.path.join(name, 'size_max_cluter.png'))
 
